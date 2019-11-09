@@ -1,0 +1,66 @@
+\documentclass{ctexrep}
+\usepackage{accsupp}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\geometry{a4paper,hmargin=1.25in,vmargin=1in}
+
+\ctexset{
+  chapter ={
+    format = \huge\bfseries\raggedright,
+    number = \arabic{chapter},
+    name   = {},
+  },
+  section/format = \Large\bfseries\raggedright
+}
+
+\lstset{
+  backgroundcolor = \color{lightgray!30},
+  keywordstyle    = \color{blue},
+  stringstyle     = \color{brown},
+  basicstyle      = {\small\ttfamily},
+  breaklines      = true,
+  tabsize         = 4,
+  gobble          = 2,
+  numbers         = left,
+  numberstyle     = \tiny\emptyaccsupp,
+  frame           = single,
+  xleftmargin     = \ccwd,
+  numbersep       = \ccwd,
+  columns         = fullflexible,
+}
+
+\newcommand\emptyaccsupp[1]{%
+  \BeginAccSupp{ActualText={}}#1\EndAccSupp{}%
+}
+
+\hypersetup{colorlinks}
+
+\title{\bfseries SumatraPDF 阅读器的配置方法\thanks{\url{https://github.com/OsbertWang/latex-editor-sumatrapdf}}}
+\author{啸行\thanks{\url{ranwang.osbert@outlook.com}}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  SumatraPDF 是一款常见的、功能比较丰富的、适合浏览 \LaTeX{} 编译结果的轻量级 PDF 阅读器.
+  以前 C\TeX{} 套装将它集成以配合 WinEdt 使用,
+  现如今依然有很多 WinEdt 用户青睐于这样的搭配,
+  \href{https://www.sumatrapdfreader.org/free-pdf-reader.html}{SumatraPDF 官网}%
+  也给出了 \href{https://www.sumatrapdfreader.org/docs/Use-Sumatra-as-a-pre-viewer-for-LaTeX-editors.html}{Use Sumatra as a pre-viewer for LaTeX editors}
+  的手册,
+  其中就包含了
+  \href{http://www.texniccenter.org/}{TeXnicCenter}、
+  \href{http://www.winedt.com/}{WinEdt}、
+  \href{https://www.gnu.org/software/emacs/}{Emacs}
+  和
+  \href{https://www.vim.org/}{Vim}.
+  本文将整合
+  \href{https://wenda.latexstudio.net/article-5055.html}{SumatraPDF 阅读器该怎么设置——以 TeXStudio 和 VS Code 为例}%
+  和%
+  \href{https://wenda.latexstudio.net/article-5057.html}{以 Notepad++ 为 LaTeX 编辑器及以 SumatraPDF 进行正反向搜索的配置方法}%
+  两篇文章.
+\end{abstract}
+\end{document}
