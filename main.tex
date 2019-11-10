@@ -2,7 +2,9 @@
 \usepackage{accsupp}
 \usepackage{geometry}
 \usepackage{listings}
+\usepackage{xcolor}
 \usepackage{hyperref}
+\usepackage[os=win,hyperrefcolorlinks]{menukeys}
 
 \geometry{a4paper,hmargin=1.25in,vmargin=1in}
 
@@ -35,7 +37,10 @@
   \BeginAccSupp{ActualText={}}#1\EndAccSupp{}%
 }
 
-\hypersetup{colorlinks}
+\hypersetup{pdfpagelayout=SinglePage}
+
+\renewmenumacro{\menu}[>]{angularmenus}
+\renewmenumacro{\keys}[+]{shadowedroundedkeys}
 
 \title{\bfseries SumatraPDF 阅读器的配置方法\thanks{\url{https://github.com/OsbertWang/latex-editor-sumatrapdf}}}
 \author{啸行\thanks{\url{ranwang.osbert@outlook.com}}}
@@ -62,5 +67,210 @@
   和%
   \href{https://wenda.latexstudio.net/article-5057.html}{以 Notepad++ 为 LaTeX 编辑器及以 SumatraPDF 进行正反向搜索的配置方法}%
   两篇文章.
+
+  全文假设 \texttt{main.tex} 已经被编译为 \texttt{main.pdf},
+  其中 \texttt{main.tex} 内容如下:
+  \begin{lstlisting}[gobble=4,language={[LaTeX]TeX}]
+    \documentclass{article}
+    \usepackage{lipsum}
+    \begin{document}
+    \section{main file}
+    \lipsum[1]
+    \input{subfile.tex}
+    \end{document}
+  \end{lstlisting}
+  而 \texttt{subfile.tex} 内容如下:
+  \begin{lstlisting}[gobble=4,language={[LaTeX]TeX}]
+    \section{subfile}
+    \lipsum[2]
+    \[ a = b \]
+  \end{lstlisting}
 \end{abstract}
+
+\chapter{\TeX Studio}
+假设 \texttt{<SumatraPDFROOT>} 是 SumatraPDF 的安装路径.
+在配置之前,
+我首先简要介绍下使用命令行的方法.
+
+事实上,
+SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
+对 \LaTeX{} 用户而言,
+最重要的效果就是正反向搜索.
+在这里给出我所使用的命令行代码.
+\begin{lstlisting}
+  <SumatraPDFROOT>\SumatraPDF.exe -reuse-instance -forward-search main.tex 4 -inverse-search "\"<TeXStudioROOT>\texstudio.exe\" \"%f\" -line %l" main.pdf
+\end{lstlisting}
+其中,
+\begin{lstlisting}
+  -reuse-instance
+\end{lstlisting}
+表示只打开一个 SumatraPDF 窗口;
+\begin{lstlisting}
+  -forward-search main.tex 4
+\end{lstlisting}
+表示对 \texttt{main.tex} 的第 4 行进行正向搜索
+(在 SumatraPDF 中表现为 \texttt{main.pdf} 对应位置变蓝);
+\begin{lstlisting}
+  -inverse-search "\"<TeXStudioROOT>\texstudio.exe\" \"%f\" -line %l" main.pdf
+\end{lstlisting}
+表示使用 \TeX Studio 对 \texttt{main.pdf} 进行反向搜索
+(表现为双击 \texttt{main.pdf} 的某部分会在 \TeX Studio 中返回对应的 \texttt{tex} 文件的某行).
+
+明白了命令行的原理就很容易在软件中进行设置了.
+首先在 \menu{Options > Configure TeXstudio} 中选择 \menu{Show Advanced Options},
+而后在 \menu{Build > User commands} 中添加
+\begin{lstlisting}
+  "<SumatraPDFDIR>\SumatraPDF.exe" -reuse-instance -forward-search "?c:am.tex" @ -inverse-search "<TeXstudioDIR>\texstudio.exe %%f -line %%l" "?am.pdf"
+\end{lstlisting}
+将其命名为 \texttt{user0:sumatrapdf}.
+这里的 \texttt{?c:am.}、\texttt{@}、\texttt{\%\%} 均是 \TeX Studio 自己定义的有特殊含义的字符.
+接下来,
+在 \menu{Build > Build \& View} 中将
+\texttt{txs:///compile | txs:///view}
+改为
+\texttt{txs:///compile | txs:///user0}.
+最后在 \menu{Menus} 中将 \menu{View} 的命令由 \texttt{txs:///view}
+改为 texttt{txs:///user0}.
+完成以上设置后,
+关闭窗口.
+这时,
+用户使用快捷键 \keys{F5} 和 \keys{F7}
+均可打开 SumatraPDF 并且实现了正反向搜索.
+
+如果以上设置没能正确实现正反向搜索,
+那么可以将 \texttt{user0:sumatrapdf} 改为
+\begin{lstlisting}
+  dde:///"<SumatraPDFROOT>\SumatraPDF.exe":SUMATRA/control/[ForwardSearch("?am.pdf","?c:am.tex",@,0,0,1)]
+\end{lstlisting}
+其他不变.
+而后用 SumatraPDF 打开编译完的 pdf 文件,
+将
+\begin{lstlisting}
+  "<TeXstudioROOT>\texstudio.exe" "%f" -line %l
+\end{lstlisting}
+写入 \menu{Settings > Options > Set inverse search command line}.
+至此完成了逆向搜索,
+双击 pdf 文件便可回到 \TeX Studio 中对应代码的行首.
+
+\chapter{VS Code}
+同样先介绍命令行
+\begin{lstlisting}
+  <SumatraPDFROOT>\SumatraPDF.exe -reuse-instance -forward-search main.tex 4 -inverse-search "\"<VSCodeROOT>\Code.exe\" -r -g \"%f:%l\"" main.pdf
+\end{lstlisting}
+其中 \texttt{<VSCodeROOT>} 是 VS Code 的安装路径.
+与前面不同的是 \texttt{-inverse-search} 参数对应了不同的编辑器.
+
+接下来,
+用户安装 \textsf{LaTeX-Workshop} 插件.
+然后打开设置的 \texttt{json} 文件,
+在其中添加以下代码:
+\begin{lstlisting}
+  "latex-workshop.view.pdf.viewer": "external",
+  "latex-workshop.view.pdf.ref.viewer":"external",
+  "latex-workshop.view.pdf.external.viewer.command": "<SumatraPDFROOT>/SumatraPDF.exe",
+  "latex-workshop.view.pdf.external.viewer.args": [
+	  "-inverse-search",
+	  "\"<VSCodeROOT>/Code.exe\" \"<VSCodeROOT>/resources/app/out/cli.js\" -r -g \"%f:%l\"",
+    "%PDF%"
+  ],
+  "latex-workshop.view.pdf.external.synctex.command": "<SumatraPDFROOT>/SumatraPDF.exe",
+  "latex-workshop.view.pdf.external.synctex.args":[
+    "-forward-search",
+    "%TEX%",
+    "%LINE%",
+    "%PDF%",
+  ],
+\end{lstlisting}
+注意在 \texttt{json} 文件中要将路径中的 \verb+\+ 写作 \verb+/+,
+并且我们比命令行时多添加了一段 \texttt{cli.js} 相关的代码.
+下面略加解释以上设置的用意.
+
+为了能够使用 SumatraPDF 进行正反向搜索,
+首先需要将
+\begin{lstlisting}
+  "latex-workshop.view.pdf.viewer"
+\end{lstlisting}
+和
+\begin{lstlisting}
+  "latex-workshop.view.pdf.ref.viewer"
+\end{lstlisting}
+都设置为外部 (external).
+然后在
+\begin{lstlisting}
+  "latex-workshop.view.pdf.external.viewer.command"
+\end{lstlisting}
+和
+\begin{lstlisting}
+  "latex-workshop.view.pdf.external.viewer.args"
+\end{lstlisting}
+中分别设置打开 pdf 阅读器的命令和所需参数,
+这些参数用于进行反向搜索.
+类似地,
+正面搜索的命令和参数分别定义在
+\begin{lstlisting}
+  "latex-workshop.view.pdf.external.synctex.command"
+\end{lstlisting}
+和
+\begin{lstlisting}
+  "latex-workshop.view.pdf.external.synctex.args"
+\end{lstlisting}
+
+完成以上设置,
+用户使用时在左侧点击 \menu{View LaTeX PDF} 便可打开 SumatraPDF,
+之后点击 \menu{navigate, select and edit > SyncTeX from cursor} 便可进行正向搜索.
+当然,
+VS Code 还提供了快捷键供用户使用,
+用户可以自行查询或更改为自己喜欢的按键组合.
+
+\chapter{Notepad++}
+Notepad++ 配合 SumatraPDF 阅读器需要一些插件,
+例如 \texttt{NppExec} 和 \texttt{Customize Toolbar},
+它们的安装方式很简单,
+在 \menu{插件 > 插件管理} 中即可找到.
+
+首先用 Notepad++ 打开一个 \texttt{tex} 文件.
+通过快捷键 \keys{F6} 调出 \texttt{Execute} 对话框.
+在窗口内输入如下代码:
+\begin{lstlisting}
+  cd $(CURRENT_DIRECTORY)
+  xelatex -synctex=1 -interaction=nonstopmode $(NAME_PART)
+\end{lstlisting}
+简要介绍一下代码含义.
+\verb+$(CURRENT_DIRECTORY)+ 是 \texttt{NppExec} 插件的设置的变量,
+表示当前文件所在的目录;
+\verb+$(NAME_PART)+ 表示当前文件文件名 (不含扩展名).
+这两句代码的含义就很好理解了,
+进入当前目录,
+对当前文件用 \texttt{xelatex} 以指定参数进行编译.
+将这段临时脚本起名保存为 \texttt{XeLaTeX},
+点击 \keys{OK} 按钮即开始这段脚本.
+类似地,
+我们可以创建其他编译命令的执行脚本,
+不一一赘述.
+
+为了实现 SumatraPDF 的正反向搜索,
+预览 pdf 文件的脚本应输入如下代码:
+\begin{lstlisting}
+  cd $(CURRENT_DIRECTORY)
+  NPP_run "<SumatraPDFROOT>\SumatraPDF.exe" -reuse-instance -forward-search $(NAME_PART).tex $(CURRENT_LINE) -inverse-search "\"<Notepad++ROOT>\Notepad++.exe\" -n%l %f" $(NAME_PART).pdf
+\end{lstlisting}
+其中,
+\verb+Npp_run+ 是 \texttt{NppExec} 附带的命令,
+表示执行外部程序和命令;
+\verb+$(CURRENT_LINE)+ 表示文件的当前行.
+若要形成编译链,
+连续使用几个既已保存的脚本,
+可以不用将脚本命令重复复制,
+可以使用 \texttt{NppExec} 附带命令 \verb+Npp_exec+ 执行相应脚本即可.
+例如,
+已经设置保存了 \texttt{XeLaTeX}、\texttt{bibtex} 和 \texttt{View PDF} 三个脚本,
+若需创建一个标准的完整编译过程的脚本,
+可以在 \texttt{Execute} 窗口输入如下代码并保存即可
+\begin{lstlisting}
+  Npp_exec "XeLaTeX"
+  Npp_exec "bibtex"
+  Npp_exec "XeLaTeX"
+  Npp_exec "XeLaTeX"
+  Npp_exec "View PDF"
+\end{lstlisting}
 \end{document}
