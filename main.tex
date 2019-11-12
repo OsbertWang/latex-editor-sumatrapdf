@@ -273,4 +273,69 @@ Notepad++ 配合 SumatraPDF 阅读器需要一些插件,
   Npp_exec "XeLaTeX"
   Npp_exec "View PDF"
 \end{lstlisting}
+
+利用 \menu{插件 > NppExec > Advanced Options} 可以进行一些高级设置,
+将已经保存的脚本加入到菜单项中.
+\menu{Menu item} 可以选择需要添加到菜单的脚本,
+并为菜单项设置名称;
+\menu{Menu item*} 中勾选 \menu{Place to the Macros submenu} 后,
+菜单项将添加在\menu{宏 (M)} 菜单项之下.
+
+在\menu{宏 (M) > 管理快捷键}可以设置快捷键.
+在\menu{插件命令}选项卡可以找到添加到菜单项的命令,
+利用对话框设置快捷键即可.
+
+快捷键 \keys{Shift + F6} 可以调出 NppExec 控制台输出过滤.
+在 \menu{HighLight} 选项卡中,
+我们可以设置控制台信息过滤条件 \texttt{l.\%LINE\%},
+并设置高亮颜色和粗体下划线样式.
+在勾选最前面的 \menu{checkbox},
+启用这个条件后,
+我们可以编辑一个简单的 tex 文件:
+\begin{lstlisting}[language={[LaTeX]TeX}]
+  \documentclass{article}
+\begin{document}
+  Hello! \latex
+\end{document}
+\end{lstlisting}
+我们故意写错 \verb+\LaTeX+ 为 \verb+\latex+,
+进行编译后,
+系统将给出报错信息,
+控制台回显的报错信息中:
+\begin{lstlisting}
+  l.4  Hello! \latex
+\end{lstlisting}
+双击这条报错信息,
+在文本编辑器内,
+光标将定位到出错这一行的行首.
+这个设置实现了错误快速定位.
+
+\texttt{Cstomize Toolbar} 安装完成后,
+\menu{插件 > Customize Toolbar > Custom Buttons} 可以启动用户自定义工具条按钮.
+按钮的配置是通过文件
+\begin{lstlisting}
+  %APPDATA%\Notepad++\plugins\config\CustomizeToolbar.btn
+\end{lstlisting}
+实现的.
+文件示例如下:
+\begin{lstlisting}
+  宏(M),pdfLaTeX,,,pdflatex.bmp
+  宏(M),XeLaTeX,,,xelatex.bmp
+  宏(M),bibtex,,,bibtex.bmp
+  宏(M),biber,,,biber.bmp
+  宏(M),makeindex,,,makeindex.bmp
+  宏(M),View PDF,,,adobe.bmp
+  宏(M),Clear,,,trash.bmp
+  宏(M),Latexmk,,,latexmk.bmp
+\end{lstlisting}
+其中,
+每一行均为4个逗号,
+分隔成的5部分,
+前4部分为各级菜单项名称,
+必须与当前菜单选用的界面语言一致,
+最后一项为按钮显示图标文件名,
+图标文件必须为 $16 \times 16$ 的 bmp 格式图像.
+特别需要注意的是:
+\texttt{CustomizeToolbar.btn} 的文件编码格式必须保存为 \textbf{UCS-2 Little Endian 含 BOM},
+文件行尾格式必须为 \textbf{Windows (CR LF)}.
 \end{document}
