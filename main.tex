@@ -120,10 +120,10 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
 首先在 \menu{Options > Configure TeXstudio} 中选择 \menu{Show Advanced Options},
 而后在 \menu{Build > User commands} 中添加
 \begin{lstlisting}
-  "<SumatraPDFDIR>\SumatraPDF.exe" -reuse-instance -forward-search "?c:am.tex" @ -inverse-search "<TeXstudioDIR>\texstudio.exe %%f -line %%l" "?am.pdf"
+  "<SumatraPDFDIR>\SumatraPDF.exe" -reuse-instance -forward-search ?c:rme" @ -inverse-search "<TeXstudioDIR>\texstudio.exe %%f -line %%l" "?m.pdf"
 \end{lstlisting}
 将其命名为 \texttt{user0:sumatrapdf}.
-这里的 \texttt{?c:am.}、\texttt{@}、\texttt{\%\%} 均是 \TeX Studio 自己定义的有特殊含义的字符.
+这里的 \texttt{?c:rme}、\texttt{@}、\texttt{\%\%}、\texttt{?m.} 均是 \TeX Studio 自己定义的有特殊含义的字符.
 接下来,
 在 \menu{Build > Build \& View} 中将
 \texttt{txs:///compile | txs:///view}
@@ -140,7 +140,7 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
 如果以上设置没能正确实现正反向搜索,
 那么可以将 \texttt{user0:sumatrapdf} 改为
 \begin{lstlisting}
-  dde:///"<SumatraPDFROOT>\SumatraPDF.exe":SUMATRA/control/[ForwardSearch("?am.pdf","?c:am.tex",@,0,0,1)]
+  dde:///"<SumatraPDFROOT>\SumatraPDF.exe":SUMATRA/control/[ForwardSearch("?m.pdf",?c:rme",@,0,0,1)]
 \end{lstlisting}
 其他不变.
 而后用 SumatraPDF 打开编译完的 pdf 文件,
@@ -155,9 +155,10 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
 \chapter{VS Code}
 同样先介绍命令行
 \begin{lstlisting}
-  <SumatraPDFROOT>\SumatraPDF.exe -reuse-instance -forward-search main.tex 4 -inverse-search "\"<VSCodeROOT>\Code.exe\" -r -g \"%f:%l\"" main.pdf
+  <SumatraPDFROOT>\SumatraPDF.exe -reuse-instance -forward-search main.tex 4 -inverse-search "\"<VSCodeROOT>\bin\code.cmd\" -r -g \"%f:%l\"" main.pdf
 \end{lstlisting}
-其中 \texttt{<VSCodeROOT>} 是 VS Code 的安装路径.
+其中 \texttt{<VSCodeROOT>} 是 VS Code 的安装路径,
+\texttt{code.cmd} 是软件已经写好的打开 VS Code 的批处理文件.
 与前面不同的是 \texttt{-inverse-search} 参数对应了不同的编辑器.
 
 接下来,
@@ -170,7 +171,7 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
   "latex-workshop.view.pdf.external.viewer.command": "<SumatraPDFROOT>/SumatraPDF.exe",
   "latex-workshop.view.pdf.external.viewer.args": [
 	  "-inverse-search",
-	  "\"<VSCodeROOT>/Code.exe\" \"<VSCodeROOT>/resources/app/out/cli.js\" -r -g \"%f:%l\"",
+	  "\"<VSCodeROOT>/bin/code.cmd\" -r -g \"%f:%l\"",
     "%PDF%"
   ],
   "latex-workshop.view.pdf.external.synctex.command": "<SumatraPDFROOT>/SumatraPDF.exe",
@@ -181,8 +182,7 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
     "%PDF%",
   ],
 \end{lstlisting}
-注意在 \texttt{json} 文件中要将路径中的 \verb+\+ 写作 \verb+/+,
-并且我们比命令行时多添加了一段 \texttt{cli.js} 相关的代码.
+注意在 \texttt{json} 文件中要将路径中的 \verb+\+ 写作 \verb+/+.
 下面略加解释以上设置的用意.
 
 为了能够使用 SumatraPDF 进行正反向搜索,
