@@ -98,7 +98,7 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
 最重要的效果就是正反向搜索.
 在这里给出我所使用的命令行代码.
 \begin{lstlisting}
-  <SumatraPDFROOT>\SumatraPDF.exe -reuse-instance -forward-search main.tex 4 -inverse-search "\"<TeXStudioROOT>\texstudio.exe\" \"%f\" -line %l" main.pdf
+  <SumatraPDFROOT>\SumatraPDF.exe -reuse-instance -forward-search subfile.tex 2 -inverse-search "\"<TeXStudioROOT>\texstudio.exe\" \"%f\" -line %l" main.pdf
 \end{lstlisting}
 其中,
 \begin{lstlisting}
@@ -106,9 +106,9 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
 \end{lstlisting}
 表示只打开一个 SumatraPDF 窗口;
 \begin{lstlisting}
-  -forward-search main.tex 4
+  -forward-search subfile.tex 2
 \end{lstlisting}
-表示对 \texttt{main.tex} 的第 4 行进行正向搜索
+表示对 \texttt{subfile.tex} 的第 2 行进行正向搜索
 (在 SumatraPDF 中表现为 \texttt{main.pdf} 对应位置变蓝);
 \begin{lstlisting}
   -inverse-search "\"<TeXStudioROOT>\texstudio.exe\" \"%f\" -line %l" main.pdf
@@ -120,10 +120,10 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
 首先在 \menu{Options > Configure TeXstudio} 中选择 \menu{Show Advanced Options},
 而后在 \menu{Build > User commands} 中添加
 \begin{lstlisting}
-  "<SumatraPDFDIR>\SumatraPDF.exe" -reuse-instance -forward-search ?c:rme" @ -inverse-search "<TeXstudioDIR>\texstudio.exe %%f -line %%l" "?m.pdf"
+  "<SumatraPDFDIR>\SumatraPDF.exe" -reuse-instance -forward-search ?c:rme" @ -inverse-search "<TeXstudioDIR>\texstudio.exe %%f -line %%l" ?p{pdf}:ame"
 \end{lstlisting}
 将其命名为 \texttt{user0:sumatrapdf}.
-这里的 \texttt{?c:rme}、\texttt{@}、\texttt{\%\%}、\texttt{?m.} 均是 \TeX Studio 自己定义的有特殊含义的字符.
+这里的 \texttt{?c:rme}、\texttt{@}、\texttt{\%\%}、\texttt{?p\{pdf\}:ame} 均是 \TeX Studio 自己定义的有特殊含义的字符.
 接下来,
 在 \menu{Build > Build \& View} 中将
 \texttt{txs:///compile | txs:///view}
@@ -140,7 +140,7 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
 如果以上设置没能正确实现正反向搜索,
 那么可以将 \texttt{user0:sumatrapdf} 改为
 \begin{lstlisting}
-  dde:///"<SumatraPDFROOT>\SumatraPDF.exe":SUMATRA/control/[ForwardSearch("?m.pdf",?c:rme",@,0,0,1)]
+  dde:///"<SumatraPDFDIR>\SumatraPDF.exe":SUMATRA/control/[ForwardSearch(?p{pdf}:ame",?c:rme",@,0,0,1)]
 \end{lstlisting}
 其他不变.
 而后用 SumatraPDF 打开编译完的 pdf 文件,
