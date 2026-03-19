@@ -173,6 +173,8 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
   "latex-workshop.view.pdf.external.viewer.command": "<SumatraPDFROOT>/SumatraPDF.exe",
   "latex-workshop.view.pdf.external.viewer.args": [
     "-reuse-instance",
+    "-inverse-search",
+    "\"<VSCodeROOT>/bin/code.cmd\" -r -g \"%f:%l\"",
     "%PDF%"
   ],
   "latex-workshop.view.pdf.external.synctex.command": "<SumatraPDFROOT>/SumatraPDF.exe",
@@ -217,6 +219,9 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
 \begin{lstlisting}
   "latex-workshop.view.pdf.external.synctex.args"
 \end{lstlisting}
+注意到在两处参数设置中我都添加了 \texttt{-inverse-search} 相关参数,
+这是为了确保每次打开 pdf 文件时,
+SumatraPDF 都写入相关的反向搜索参数.
 
 完成以上设置,
 用户使用时在左侧点击 \menu{View LaTeX PDF} 便可打开 SumatraPDF,
