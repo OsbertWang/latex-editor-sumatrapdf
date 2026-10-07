@@ -122,7 +122,7 @@ SumatraPDF 允许通过添加命令行参数来形成不同的阅读效果.
 首先在 \menu{Options > Configure TeXstudio} 中选择 \menu{Show Advanced Options},
 而后在 \menu{Build > User commands} 中添加
 \begin{lstlisting}
-  "<SumatraPDFDIR>\SumatraPDF.exe" -reuse-instance -forward-search ?c:rme" @ -inverse-search "<TeXstudioDIR>\texstudio.exe %%f -line %%l" ?p{pdf}:ame"
+  "<SumatraPDFDIR>\SumatraPDF.exe" -reuse-instance -forward-search ?c:rme" @ -inverse-search "\\"<TeXstudioROOT>\texstudio.exe\\" \\"%%f\\" -line %%l" ?p{pdf}:rme" &
 \end{lstlisting}
 将其命名为 \texttt{user0:sumatrapdf}.
 这里的 \texttt{?c:rme}、\texttt{@}、\texttt{\%\%}、\texttt{?p\{pdf\}:ame} 均是 \TeX Studio 自己定义的有特殊含义的字符.
